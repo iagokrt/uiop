@@ -1,48 +1,38 @@
-import React, { useRef, useState } from 'react'
-import { BackSide, MeshNormalMaterial } from 'three'
+import React, { useRef, useState, useMemo } from 'react'
+import { BackSide, MeshNormalMaterial, FrontSide, DoubleSide } from 'three'
 
 import { MeshWobbleMaterial } from 'drei'
 
 import { useFrame } from 'react-three-fiber'
-/**
- *   color={'crimson'}
-          attach="material"
-          side={BackSide}
-          metalness={0.12}
-          speed={5}
-          factor={0.88}
-          wireframe
- */
+
+const NUM = 1
 
 const Mob = () => {
   const mesh = useRef()
-
   const [active, setActive] = useState(false)
 
-  useFrame(() => {
-    // mesh.current.rotation.x += 0.01
-    mesh.current.rotation.y -= 0.02
-  })
-
+  // useFrame((t) => {
+  //   mesh.current.rotation.y += 0.01
+  //   mesh.current.scale.y = mesh.current.scale.z = mesh.current.scale.x += 0.01
+  // })
+  // const args = [
+  //   {
+  //     position: [0, 0, 5],
+  //     color: '#ff0000'
+  //   },
+  //   {
+  //     position: [0, 0, -5],
+  //     color: '#00ff00'
+  //   }
+  // ]
   return (
     <>
-      {/*inside mesh */}
-      <mesh
-        ref={mesh}
-        onClick={(e) => setActive(!active)}
-        onPointerMove={(e) => setActive(!active)}
-      >
-        <octahedronBufferGeometry attach="geometry" />
-        <MeshWobbleMaterial
-          color={active ? 'crimson' : 'blue'}
-          attach="material"
-          side={BackSide}
-          metalness={0.12}
-          speed={4}
-          factor={0.28}
-          wireframe
-        />
-      </mesh>
+      <group>
+        <mesh onClick={(e) => console.log('click')}>
+          <coneBufferGeometry attach="geometry" />
+          <meshNormalMaterial attach="material" wireframe />
+        </mesh>
+      </group>
     </>
   )
 }

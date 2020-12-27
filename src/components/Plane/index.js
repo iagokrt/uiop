@@ -2,15 +2,6 @@ import React, { useRef, useState } from 'react'
 import { FrontSide, BackSide } from 'three'
 
 import { MeshWobbleMaterial } from 'drei'
-/**
- *   color={'crimson'}
-          attach="material"
-          side={BackSide}
-          metalness={0.12}
-          speed={5}
-          factor={0.88}
-          wireframe
- */
 
 const Plane = () => {
   const mesh = useRef()
@@ -24,16 +15,8 @@ const Plane = () => {
     <>
       {/*inside mesh */}
       <mesh ref={mesh} onClick={(e) => dts(mesh)}>
-        <planeBufferGeometry attach="geometry" />
-        <MeshWobbleMaterial
-          color={'crimson'}
-          attach="material"
-          side={BackSide}
-          metalness={0.12}
-          roughness={1}
-          speed={2}
-          factor={1}
-        />
+        <planeBufferGeometry args={[2, 10]} attach="geometry" />
+        <meshBasicMaterial  side={FrontSide} attach="material" />
       </mesh>
     </>
   )
