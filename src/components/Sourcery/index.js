@@ -6,31 +6,34 @@ import { MeshWobbleMaterial, PositionalAudio } from 'drei'
 const Sourcery = () => {
   const mesh = useRef()
 
-  const [select, set] = useState(false)
+  const [selected, set] = useState(false)
 
-  const args = [
+  const meshes = [
     {
-      position: [10, 0, -10],
+      position: [selected ? 8 : 2, 0, 0],
       url: 'Salvando.m4a',
-      color: '#0000ff'
+      color: '#0000ff',
+      visible: true
     },
     {
-      position: [-10, 0, -10],
+      position: [-10, -10, -10],
       url: 'Saverrr.m4a',
-      color: '#ff0000'
+      color: '#ff0000',
+      visible: false
     }
   ]
 
   return (
     <>
-      {/*inside meshes */}
+      {/* inside music orbs - meshes */}
       <group position={[0, 0, 5]}>
-        {args.map(({ position, url, color }, index) => (
+        {meshes.map(({ position, url, color, visible }, index) => (
           <mesh
             key={`0${index}`}
             position={position}
-            onClick={() => set(!select)}
+            onClick={() => set(!selected)}
             ref={mesh}
+            visible={visible}
           >
             <octahedronBufferGeometry attach="geometry" />
 

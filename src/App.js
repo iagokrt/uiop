@@ -11,9 +11,10 @@ import { Sourcery } from './components/Sourcery'
 import { FrontSide } from 'three'
 
 import { Frames } from './Frames'
-import { act } from 'react-dom/test-utils'
 
 function Effect({ offset }) {
+  const composer = useRef()
+
   return (
     <EffectComposer>
       <ChromaticAberration offset={[-0.002, 0.009]} />
@@ -54,18 +55,21 @@ function App() {
           {/*main environment */}
           <group>
             <mesh ref={mesh}>
-              <sphereBufferGeometry args={[15, 20, 55]} attach="geometry" />
+              <sphereBufferGeometry
+                args={active ? [15, 20, 55] : [15, 2, 55]}
+                attach="geometry"
+              />
               <MeshWobbleMaterial
                 attach="material"
                 side={FrontSide}
-                metalness={0.12}
-                speed={active ? 8 : 2}
+                metalness={0.8}
+                speed={active ? 10 : 1}
                 color={active ? 'crimson' : 'blue'}
               />
             </mesh>
           </group>
 
-          <TrackballControls noZoom />
+          <TrackballControls />
         </Suspense>
       </Canvas>
       <Frames />

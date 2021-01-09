@@ -252,3 +252,15 @@ return (
 }
 
 export { Mob }
+
+canvas r3f
+
+<Canvas colorManagement camera={{ position: [-5, 3, 12], fov: 67 }}>
+
+function Dolly() {
+// This one makes the camera move in and out
+useFrame(({ clock, camera }) => {
+camera.position.z = 50 + Math.sin(clock.getElapsedTime()) \* 30
+})
+return null
+}
