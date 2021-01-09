@@ -6,12 +6,10 @@ import {
   ChromaticAberration
 } from '@react-three/postprocessing'
 import { AmbientLight } from './components/AmbientLight'
-import { LightGroup } from './components/LightGroup/LightGroup'
 import { Sourcery } from './components/Sourcery'
 import { FrontSide } from 'three'
 
 import { Frames } from './Frames'
-import { act } from 'react-dom/test-utils'
 
 function Effect({ offset }) {
   return (
@@ -28,11 +26,18 @@ function App() {
 
   return (
     <>
-      <Canvas colorManagement camera={{ position: [-5, 3, 12], fov: 67 }}>
+      <Canvas colorManagement camera={{ position: [-5, 6, 12], fov: 67 }}>
         <Suspense fallback={null}>
           <AmbientLight />
-          <LightGroup />
 
+          {/* Light Group */}
+          <group>
+            <pointLight position={[-10, 0, -20]} intensity={0.5} />
+            <pointLight position={[0, -10, 0]} intensity={1.5} />
+            <pointLight position={[20, -10, 0]} intensity={1.5} />
+          </group>
+
+          {/* controller || wireframed mesh */}
           <group>
             <mesh
               onPointerOver={(e) => setActive(!active)}
@@ -41,31 +46,35 @@ function App() {
               <octahedronBufferGeometry args={[1, 2]} attach="geometry" />
               <MeshWobbleMaterial
                 attach="material"
-                speed={active ? 1 : 3}
+                speed={active ? 1 : 10}
                 color="purple"
                 wireframe
-                factor={active ? 0.1 : 0.4}
+                factor={active ? 0.8 : 0.13}
               />
             </mesh>
           </group>
 
           <Sourcery />
 
-          {/*main environment */}
+          {/* big mesh || environment */}
           <group>
             <mesh ref={mesh}>
-              <sphereBufferGeometry args={[15, 20, 55]} attach="geometry" />
+              <sphereBufferGeometry
+                args={active ? [19, 20, 55] : [15, 2, 55]}
+                attach="geometry"
+              />
               <MeshWobbleMaterial
                 attach="material"
                 side={FrontSide}
                 metalness={0.12}
-                speed={active ? 8 : 2}
+                speed={active ? Math.PI / 1.1 : Math.E / 2}
                 color={active ? 'crimson' : 'blue'}
               />
             </mesh>
           </group>
 
-          <TrackballControls noZoom />
+          {/* drei controlls */}
+          <TrackballControls noZoom={active ? false : true} />
         </Suspense>
       </Canvas>
       <Frames />
