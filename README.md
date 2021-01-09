@@ -252,3 +252,253 @@ return (
 }
 
 export { Mob }
+
+# Triangulet
+
+import React, { Suspense, useRef, useState } from "react";
+import { Canvas, useFrame } from "react-three-fiber";
+import { MeshWobbleMaterial, TrackballControls } from "drei";
+import {
+EffectComposer,
+ChromaticAberration
+} from "@react-three/postprocessing";
+import { AmbientLight } from "./components/AmbientLight";
+import { LightGroup } from "./components/LightGroup/LightGroup";
+import { Sourcery } from "./components/Sourcery";
+import { FrontSide } from "three";
+
+import { Frames } from "./Frames";
+
+function Effect({ offset }) {
+const composer = useRef();
+
+return (
+<EffectComposer>
+<ChromaticAberration offset={[-0.002, 0.009]} />
+</EffectComposer>
+);
+}
+
+function App() {
+const mesh = useRef();
+
+const [active, setActive] = useState(false);
+
+return (
+<>
+<Canvas colorManagement camera={{ position: [-5, 3, 12], fov: 67 }}>
+<Suspense fallback={null}>
+<AmbientLight />
+<LightGroup />
+
+          <group>
+            <mesh
+              onPointerOver={(e) => setActive(!active)}
+              position={[0, -2, 0]}
+            >
+              <octahedronBufferGeometry args={[1, 2]} attach="geometry" />
+              <MeshWobbleMaterial
+                attach="material"
+                speed={active ? 1 : 3}
+                color="purple"
+                wireframe
+                factor={active ? 0.1 : 0.4}
+              />
+            </mesh>
+          </group>
+
+          <Sourcery />
+
+          <group>
+            <mesh ref={mesh}>
+              <sphereBufferGeometry
+                args={active ? [19, 20, 55] : [15, 2, 55]}
+                attach="geometry"
+              />
+              <MeshWobbleMaterial
+                attach="material"
+                side={FrontSide}
+                metalness={0.8}
+                speed={active ? Math.PI : Math.E / 2}
+                factor={active ? 1 : .2}
+                color={active ? "crimson" : "blue"}
+              />
+            </mesh>
+          </group>
+
+          <TrackballControls />
+        </Suspense>
+      </Canvas>
+      <Frames />
+    </>
+
+);
+}
+
+export default App;
+
+---
+
+## MOB
+
+import React, { useRef, useState, useMemo } from "react";
+import { BackSide, MeshNormalMaterial, FrontSide, DoubleSide } from "three";
+
+import { MeshWobbleMaterial } from "drei";
+
+import { useFrame } from "react-three-fiber";
+
+const NUM = 1;
+
+const Mob = () => {
+const mesh = useRef();
+const camera = useRef()
+const [active, setActive] = useState(false);
+
+useFrame(({ camera }) => {
+camera.position.z = 50 + Math.E \* 30;
+});
+const template = [
+{
+position: [0, 0, 5],
+color: "#ff0000"
+},
+{
+position: [0, 0, -5],
+color: "#00ff00"
+}
+];
+return (
+<>
+<group>
+<mesh ref={mesh}>
+<coneBufferGeometry attach="geometry" />
+<meshNormalMaterial attach="material" />
+</mesh>
+</group>
+</>
+);
+};
+
+export { Mob };
+
+---
+
+# camera mob movement
+
+import React, { Suspense, useRef, useState } from "react";
+import { Canvas, useFrame } from "react-three-fiber";
+import { MeshWobbleMaterial, TrackballControls } from "drei";
+import {
+EffectComposer,
+ChromaticAberration
+} from "@react-three/postprocessing";
+import { AmbientLight } from "./components/AmbientLight";
+import { LightGroup } from "./components/LightGroup/LightGroup";
+import { Sourcery } from "./components/Sourcery";
+import { FrontSide } from "three";
+
+import { Frames } from "./Frames";
+
+// import { Mob } from "./components/Mob";
+/\*\*
+
+- Default Camera Definition
+- @positions { position: [-5, 3, 12] }
+  \*/
+  const Mob = () => {
+  const mesh = useRef();
+  const camera = useRef();
+
+useFrame(({ camera }) => {
+camera.position.z += 0.01;
+
+    if (camera.position.z > 30) {
+      camera.position.x = 14;
+    }
+
+});
+
+return (
+<>
+<group>
+<mesh ref={mesh}>
+<coneBufferGeometry attach="geometry" />
+<meshNormalMaterial attach="material" />
+</mesh>
+</group>
+</>
+);
+};
+
+function Effect({ offset }) {
+const composer = useRef();
+
+return (
+<EffectComposer>
+<ChromaticAberration offset={[-0.002, 0.009]} />
+</EffectComposer>
+);
+}
+
+function App() {
+const mesh = useRef();
+
+const cntllr = useRef();
+
+const [active, setActive] = useState(false);
+
+return (
+<>
+<Canvas colorManagement camera={{ position: [-5, 3, 12], fov: 67 }}>
+<Suspense fallback={null}>
+<AmbientLight />
+<LightGroup />
+
+          <Mob />
+          <group>
+            <mesh
+              ref={cntllr}
+              onPointerOver={(e) => setActive(!active)}
+              position={[0, -2, 0]}
+            >
+              <octahedronBufferGeometry args={[1, 2]} attach="geometry" />
+              <MeshWobbleMaterial
+                attach="material"
+                speed={active ? 1 : 3}
+                color="purple"
+                wireframe
+                factor={active ? 0.1 : 0.4}
+              />
+            </mesh>
+          </group>
+
+          <Sourcery />
+
+          <group>
+            <mesh ref={mesh}>
+              <sphereBufferGeometry
+                args={active ? [19, 20, 55] : [15, Math.E, 55]}
+                attach="geometry"
+              />
+              <MeshWobbleMaterial
+                attach="material"
+                side={FrontSide}
+                metalness={0.8}
+                speed={active ? Math.PI : Math.E / 2}
+                factor={active ? 1 : 0.2}
+                color={active ? "crimson" : "blue"}
+              />
+            </mesh>
+          </group>
+
+          <TrackballControls noZoom />
+        </Suspense>
+      </Canvas>
+      <Frames />
+    </>
+
+);
+}
+
+export default App;
